@@ -38,6 +38,7 @@ public class SceneHandler : SingletonMonoBehavior<SceneHandler>
         }
         else
         {
+            AudioManager.instance.PlaySfx("Play");
             transitionCanvas.DOLocalMoveX(initXPosition + transitionCanvas.rect.width, animationDuration).SetEase(animationType);
             StartCoroutine(LoadSceneAfterTransition(levels[nextLevelIndex]));
             nextLevelIndex++;
