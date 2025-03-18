@@ -6,8 +6,8 @@ public class GameManager : SingletonMonoBehavior<GameManager>
     [SerializeField] private int maxLives = 3;
     [SerializeField] private Ball ball;
     [SerializeField] private Transform bricksContainer;
-    //public ParticleSystem ExplosionParticles; 
-    //public ParticleSystem FlashParticles;
+    public ParticleSystem ExplosionParticles; 
+    public ParticleSystem FlashParticles;
 
 
     private int brick = 0;
@@ -40,7 +40,7 @@ public class GameManager : SingletonMonoBehavior<GameManager>
         // fire audio here
         //AudioManager.instance.PlaySfx("Brick");
         // implement particle effect here
-        //PlayHitEffects(position);
+        PlayHitEffects(position);
         // add camera shake here
 
         // implementing coin text
@@ -61,12 +61,12 @@ public class GameManager : SingletonMonoBehavior<GameManager>
         ball.ResetBall();
     }
 
-/*
+
     public void PlayHitEffects(Vector3 position){
         ExplosionParticles.transform.position = position;
         FlashParticles.transform.position = position;
         ExplosionParticles.Play();
         FlashParticles.Play();
     }
-*/
+
 }   
