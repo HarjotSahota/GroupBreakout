@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : SingletonMonoBehavior<GameManager>
@@ -8,7 +10,8 @@ public class GameManager : SingletonMonoBehavior<GameManager>
     [SerializeField] private Transform bricksContainer;
     public ParticleSystem ExplosionParticles; 
     public ParticleSystem FlashParticles;
-
+    [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private TMP_Text livesText;
 
     private int brick = 0;
     [SerializeField] private BrickCounterUI brickCounter;
@@ -37,13 +40,13 @@ public class GameManager : SingletonMonoBehavior<GameManager>
 
     public void OnBrickDestroyed(Vector3 position)
     {
-        // fire audio here
+        // Fire audio here
         AudioManager.instance.PlaySfx("Brick");
-        // implement particle effect here
+        // Implement particle effect here
         PlayHitEffects(position);
-        // add camera shake here
+        // Add camera shake here
 
-        // implementing coin text
+        // Implementing coin text
         brick ++;
         brickCounter.UpdateScore(brick);
 
@@ -55,18 +58,40 @@ public class GameManager : SingletonMonoBehavior<GameManager>
     public void KillBall()
     {
         maxLives--;
-        // update lives on HUD here
-        AudioManager.instance.PlaySfx("Miss");
-        // game over UI if maxLives < 0, then exit to main menu after delay
-        ball.ResetBall();
+        UpdateLivesUI();
+
+        if (maxLives == 0)
+        {
+            StartCoroutine(GameOverSequence());
+        }
+        else
+        {
+            ball.ResetBall();
+        }
     }
 
+    IEnumerator GameOverSequence()
+    {
+        Time.timeScale = 0f; // Freeze time
+        gameOverPanel.SetActive(true); // Show Game Over UI
 
-    public void PlayHitEffects(Vector3 position){
+        yield return new WaitForSecondsRealtime(1.5f); // Wait for 1.5 seconds in real-time
+
+        Time.timeScale = 1f; // Restore time scale
+        SceneHandler.Instance.LoadMenuScene(); // Transition to Main Menu
+    }
+
+    void UpdateLivesUI()
+    {
+        livesText.text = "Lives: " + Mathf.Max(0, maxLives);
+    }
+
+    
+    public void PlayHitEffects(Vector3 position)
+    {
         ExplosionParticles.transform.position = position;
         FlashParticles.transform.position = position;
         ExplosionParticles.Play();
         FlashParticles.Play();
     }
-
-}   
+}  
